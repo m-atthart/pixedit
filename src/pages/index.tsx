@@ -14,32 +14,46 @@ const Home: NextPage = () => {
 	const newImgRef = useRef<HTMLImageElement>(null);
 	const newImg = newImgRef.current;
 
-	useEffect(() => {
+	const setNewImg = (
+		base64Img: string = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAEsBAMAAACLU5NGAAAAG1BMVEXMzMyWlpa3t7eqqqqcnJyjo6PFxcWxsbG+vr6NAD6nAAAACXBIWXMAAA7EAAAOxAGVKw4bAAACjklEQVR4nO3XO2/bMBDA8fNTGn2OlGS00S8QAWnnaKi7xnBQdJSBFl3joY/RRpHv3SNFykYtdKOm/w8BHOkOIM3HkRYBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/uddvWvsI38sj+7xT/2lJ2n8WH64iMbkdCaqurTPteqda98eX6+zKnu9OkdDckIH3W21kbmWlR5F9rrT+6ukTMv3ettFY3JC9UZyfZBJ0czrZxuWjXwtr5KmRSOnmy4ak9PJ3bc+PMveJvJ0a+OwslfNv1knG6Ks7KIhOaGxulYXsl7YmNy1j/XV4nLRXLtoSE4oczN2epLK5mRSuj/x/7tuPImfOfHDKXnRRUNyaq6l17bhu7aX/q1N1fY8Va7TIRqSE/tuS2a78i3Nludu7QsbsW4+54dlFw3JadVqM1Uf3b6XqSsO+4V/n+nrtGt7qrZdYzQkp6WuFLUtNW3DYebqzXoZk0ZqWzZGQ3LqblmLvhFtRq5Ho9Ct9c25OI1c52M0JKftlrzpc+9ozfSilOfbctjRsv226FtbtuBvLpJmOuza8hW7Zyfa4lpeJFl5H24nZr/Fz4srReNQt9ahW5nGpn8d/azFaEhOyJ8hNi+HtnBn5yrvClcsW+44slmL0UPyKj8Jh0/fmVjd12HxV+3hM+CZ6DZUFW4Q9+GOcPShuT6sw5o/3PovEKMhOaG5frZBWPXdt2a2xkMV2JeNuNI62H1LqmJXF9J3O7XbQ65t4xP9+OguFMPdTr9Zkd9I313eLaxt28X5VtUuqAPe5eVH/ckalPyl/THzFn/5jF0H9qEMZC/Fz4toTAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEjpL514clJrNSt2AAAAAElFTkSuQmCC"
+	) => {
 		if (canvas && img && newImg) {
-			img.src =
-				"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAEsBAMAAACLU5NGAAAAG1BMVEXMzMyWlpa3t7eqqqqcnJyjo6PFxcWxsbG+vr6NAD6nAAAACXBIWXMAAA7EAAAOxAGVKw4bAAACjklEQVR4nO3XO2/bMBDA8fNTGn2OlGS00S8QAWnnaKi7xnBQdJSBFl3joY/RRpHv3SNFykYtdKOm/w8BHOkOIM3HkRYBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/uddvWvsI38sj+7xT/2lJ2n8WH64iMbkdCaqurTPteqda98eX6+zKnu9OkdDckIH3W21kbmWlR5F9rrT+6ukTMv3ettFY3JC9UZyfZBJ0czrZxuWjXwtr5KmRSOnmy4ak9PJ3bc+PMveJvJ0a+OwslfNv1knG6Ks7KIhOaGxulYXsl7YmNy1j/XV4nLRXLtoSE4oczN2epLK5mRSuj/x/7tuPImfOfHDKXnRRUNyaq6l17bhu7aX/q1N1fY8Va7TIRqSE/tuS2a78i3Nludu7QsbsW4+54dlFw3JadVqM1Uf3b6XqSsO+4V/n+nrtGt7qrZdYzQkp6WuFLUtNW3DYebqzXoZk0ZqWzZGQ3LqblmLvhFtRq5Ho9Ct9c25OI1c52M0JKftlrzpc+9ozfSilOfbctjRsv226FtbtuBvLpJmOuza8hW7Zyfa4lpeJFl5H24nZr/Fz4srReNQt9ahW5nGpn8d/azFaEhOyJ8hNi+HtnBn5yrvClcsW+44slmL0UPyKj8Jh0/fmVjd12HxV+3hM+CZ6DZUFW4Q9+GOcPShuT6sw5o/3PovEKMhOaG5frZBWPXdt2a2xkMV2JeNuNI62H1LqmJXF9J3O7XbQ65t4xP9+OguFMPdTr9Zkd9I313eLaxt28X5VtUuqAPe5eVH/ckalPyl/THzFn/5jF0H9qEMZC/Fz4toTAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEjpL514clJrNSt2AAAAAElFTkSuQmCC";
+			img.onload = () => {
+				const canvasCtx = canvas.getContext("2d") as CanvasRenderingContext2D;
 
-			const canvasCtx = canvas.getContext("2d") as CanvasRenderingContext2D;
+				const width = img.width;
+				const height = img.height;
 
-			const width = img.width;
-			const height = img.height;
+				canvas.width = width;
+				canvas.height = height;
 
-			canvas.width = width;
-			canvas.height = height;
+				canvasCtx.drawImage(img, 0, 0);
+				const imgData = canvasCtx.getImageData(0, 0, width, height);
+				//const newImgData = canvasCtx.createImageData(width, height);
 
-			canvasCtx.drawImage(img, 0, 0);
-			const imgData = canvasCtx.getImageData(0, 0, width, height);
-			const newImgData = canvasCtx.createImageData(width, height);
+				//alter image
+				const data = imgData.data;
+				alterImage(data, width, height);
 
-			//alter image
-			const data = newImgData.data;
-			alterImage(data, width, height);
+				canvasCtx.putImageData(imgData, 0, 0);
+				const base64URI = canvas.toDataURL();
+				newImg.src = base64URI;
+			};
 
-			canvasCtx.putImageData(newImgData, 0, 0);
-			const base64URI = canvas.toDataURL();
-			newImg.src = base64URI;
+			img.src = base64Img;
 		}
-	}, [canvas, img, newImg]);
+	};
+
+	useEffect(setNewImg, [canvas, img, newImg]);
+
+	const setSelectedImage = async (file: File) => {
+		const fileReader = new FileReader();
+		fileReader.onloadend = () => {
+			const base64Img = fileReader.result as string;
+			setNewImg(base64Img);
+		};
+		fileReader.readAsDataURL(file);
+	};
 
 	return (
 		<>
@@ -50,8 +64,18 @@ const Home: NextPage = () => {
 			</Head>
 			<main>
 				<canvas ref={canvasRef} style={{ display: "none" }}></canvas>
-				<img ref={imgRef} style={{ display: "none" }} />
+				<img ref={imgRef} />
 				<img ref={newImgRef} />
+				<input
+					type="file"
+					name="myImage"
+					onChange={(e) => {
+						if (e.target.files) {
+							const file = e.target.files[0];
+							if (file) setSelectedImage(file);
+						}
+					}}
+				/>
 			</main>
 		</>
 	);
